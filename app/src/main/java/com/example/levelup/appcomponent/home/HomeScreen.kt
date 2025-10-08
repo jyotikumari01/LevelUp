@@ -1,4 +1,4 @@
-package com.example.levelup.home
+package com.example.levelup.appcomponent.home
 
 import androidx.compose.runtime.Composable
 
