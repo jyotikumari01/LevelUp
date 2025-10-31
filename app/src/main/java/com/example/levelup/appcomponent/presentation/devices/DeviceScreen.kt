@@ -1,4 +1,4 @@
-package com.example.levelup.appcomponent.devices
+package com.example.levelup.appcomponent.presentation.devices
 
 import androidx.compose.runtime.Composable
 

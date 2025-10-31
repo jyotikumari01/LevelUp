@@ -1,4 +1,4 @@
-package com.example.levelup.appcomponent.profile
+package com.example.levelup.appcomponent.presentation.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

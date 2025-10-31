@@ -1,4 +1,4 @@
-package com.example.levelup.appcomponent.workouts
+package com.example.levelup.appcomponent.presentation.workouts
 
 import androidx.compose.runtime.Composable
 
