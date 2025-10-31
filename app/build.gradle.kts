@@ -66,4 +66,7 @@ dependencies {
     // Google Health API
     implementation("com.google.android.gms:play-services-fitness:21.2.0")
 
+    //Add the Health Connect SDK dependency in your module-level build.gradle file:
+    implementation("androidx.health.connect:connect-client:1.2.0-alpha02")
+
 }
