@@ -1,9 +1,10 @@
 package com.example.levelup
 
 import android.app.Application
+import com.example.levelup.data.HealthConnectManager
 
-class BaseApplication: Application() {
+class BaseApplication : Application() {
     val healthConnectManager by lazy {
-        com.example.levelup.appcomponent.data.HealthConnectManager(this)
+        HealthConnectManager(this)
     }
 }

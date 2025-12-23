@@ -1,4 +1,4 @@
-package com.example.levelup.appcomponent.data
+package com.example.levelup.data
 
 import androidx.health.connect.client.records.HeartRateRecord
 import androidx.health.connect.client.records.SpeedRecord

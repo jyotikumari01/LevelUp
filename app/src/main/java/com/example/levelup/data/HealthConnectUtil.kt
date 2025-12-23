@@ -1,4 +1,4 @@
-package com.example.levelup.appcomponent.data
+package com.example.levelup.data
 
 import android.os.Build
 import androidx.annotation.RequiresApi

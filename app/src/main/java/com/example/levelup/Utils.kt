@@ -1,5 +1,4 @@
 package com.example.levelup
 
-class LevelUpNavGraph {
-
+class Utils {
 }

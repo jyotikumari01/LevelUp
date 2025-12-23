@@ -1,10 +1,10 @@
-package com.example.levelup.appcomponent.data
-
+package com.example.levelup.data
 
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.health.connect.client.HealthConnectClient
 import androidx.health.connect.client.HealthConnectClient.Companion.SDK_AVAILABLE
@@ -25,31 +25,29 @@ import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.time.TimeRangeFilter
 import androidx.health.connect.client.units.Energy
 import androidx.health.connect.client.units.Mass
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.levelup.worker.ReadStepWorker
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.io.IOException
 import java.time.Instant
 import java.time.ZonedDateTime
-import kotlin.random.Random
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
-// The minimum android level that can use Health Connect
 const val MIN_SUPPORTED_SDK = Build.VERSION_CODES.O_MR1
 
-/**
- * Demonstrates reading and writing from Health Connect.
- */
 class HealthConnectManager(private val context: Context) {
     private val healthConnectClient by lazy { HealthConnectClient.getOrCreate(context) }
 
-    var availability = mutableStateOf(HealthConnectAvailability.NOT_SUPPORTED)
-        private set
+    private val availability = mutableStateOf(HealthConnectAvailability.NOT_SUPPORTED)
 
     init {
         checkAvailability()
     }
 
-    fun checkAvailability() {
+    private fun checkAvailability() {
         availability.value = when {
             HealthConnectClient.getSdkStatus(context) == SDK_AVAILABLE -> HealthConnectAvailability.INSTALLED
             isSupported() -> HealthConnectAvailability.NOT_INSTALLED
@@ -57,10 +55,8 @@ class HealthConnectManager(private val context: Context) {
         }
     }
 
-    fun isFeatureAvailable(feature: Int): Boolean{
-        return healthConnectClient
-            .features
-            .getFeatureStatus(feature) == HealthConnectFeatures.FEATURE_STATUS_AVAILABLE
+    fun isFeatureAvaiable(feature: Int): Boolean {
+        return healthConnectClient.features.getFeatureStatus(feature) == HealthConnectFeatures.FEATURE_STATUS_AVAILABLE
     }
 
     /**
@@ -80,6 +76,7 @@ class HealthConnectManager(private val context: Context) {
     /**
      * TODO: Writes [WeightRecord] to Health Connect.
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun writeWeightInput(weightInput: Double) {
         val time = ZonedDateTime.now().withNano(0)
         val weightRecord = WeightRecord(
@@ -139,6 +136,7 @@ class HealthConnectManager(private val context: Context) {
     /**
      * TODO: Writes an [ExerciseSessionRecord] to Health Connect.
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun writeExerciseSession(start: ZonedDateTime, end: ZonedDateTime) {
         healthConnectClient.insertRecords(
             listOf(
@@ -174,6 +172,7 @@ class HealthConnectManager(private val context: Context) {
     /**
      * TODO: Build [HeartRateRecord].
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun buildHeartRateSeries(
         sessionStartTime: ZonedDateTime,
         sessionEndTime: ZonedDateTime,
@@ -313,14 +312,9 @@ class HealthConnectManager(private val context: Context) {
         data class NoMoreChanges(val nextChangesToken: String) : ChangesMessage()
         data class ChangeList(val changes: List<Change>) : ChangesMessage()
     }
+
 }
 
-/**
- * Health Connect requires that the underlying Health Connect APK is installed on the device.
- * [HealthConnectAvailability] represents whether this APK is indeed installed, whether it is not
- * installed but supported on the device, or whether the device is not supported (based on Android
- * version).
- */
 enum class HealthConnectAvailability {
     INSTALLED,
     NOT_INSTALLED,
